@@ -14,3 +14,14 @@ services:
       - ./app:/code/app
     depends_on:
       - redis-server
+    
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./app:/code/app
+    depends_on:
+      - redis-server
+      - api
+    command: ["ptw"]

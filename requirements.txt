@@ -3,3 +3,4 @@ uvicorn
 redis
 pytest
 requests
+pytest-watch
