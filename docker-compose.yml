@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     ports:
-      - "80:80"
+      - "8000:8000"
     volumes:
       - ./app:/code/app
     depends_on:
