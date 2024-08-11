@@ -7,3 +7,15 @@ before_install:
 
 script: 
   - docker run -e CI=true hafiz/docker-fastapi-redis python -m coverage run -m pytest
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-southeast-1"
+  app: "Fast-Redis"
+  env: "Fast-Redis-env"
+  bucket_name: "elasticbeanstalk-ap-southeast-1-794864661797"
+  bucket_path: "Fast-Redis"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
