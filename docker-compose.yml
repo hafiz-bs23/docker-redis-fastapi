@@ -5,8 +5,12 @@ services:
     image: 'redis'
 
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "80:80"
+    volumes:
+      - ./app:/code/app
     depends_on:
       - redis-server

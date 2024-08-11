@@ -22,9 +22,14 @@ def read_root():
 def ping():
     return {"status": "healthy"}
 
+@app.get("/set/{key}/{value}")
+def read_item(key: str, value: Union[str, int], cache = Depends(get_redis)):
+    cache.set(key, value)
+    return {key: value}
+
 @app.get("/show/{key}")
-def read_item(key: str):
-    value = key + "_value"
+def read_item(key: str, cache = Depends(get_redis)):
+    value = cache.get(key)
     return {key: value}
 
 @app.get("/check")
