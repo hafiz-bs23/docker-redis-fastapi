@@ -18,6 +18,14 @@ def get_redis():
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/ping")
+def ping():
+    return {"status": "healthy"}
+
+@app.get("/show/{key}")
+def read_item(key: str):
+    value = key + "_value"
+    return {key: value}
 
 @app.get("/check")
 def read_item(cache = Depends(get_redis)):
