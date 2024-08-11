@@ -5,3 +5,6 @@ pytest
 requests
 pytest-watch
 coverage
+pydantic-settings
+SQLModel
+psycopg2-binary

@@ -1,27 +1,64 @@
-version: '3'
-
 services:
+  posegres-db:
+    image: 'postgres'
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
   redis-server:
     image: 'redis'
 
   api:
+    restart: always
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile.dev
-    ports:
-      - "80:80"
     volumes:
       - ./app:/code/app
+    environment:
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=posegres-db
+      - POSTGRES_PORT=5432
     depends_on:
       - redis-server
+      - posegres-db
     
   test:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile.dev
     volumes:
       - ./app:/code/app
+    environment:
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=posegres-db
+      - POSTGRES_PORT=5432
     depends_on:
-      - redis-server
       - api
     command: ["ptw"]
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./web:/code/web
+    depends_on:
+      - api
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+      - api

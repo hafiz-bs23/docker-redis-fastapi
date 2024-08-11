@@ -21,7 +21,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        axios.get('http://localhost:80/').then(response => {
+        axios.get('/api/').then(response => {
             document.getElementById('message').innerText = response.data.data;
         });
     </script>    

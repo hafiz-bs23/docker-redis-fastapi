@@ -5,17 +5,18 @@ from fastapi.middleware.cors import CORSMiddleware
 import redis
 
 from .config.cache import pool
+from .config.setting import settings
+from .config.db import init_db, get_session
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-]
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
