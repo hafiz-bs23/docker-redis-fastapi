@@ -1,11 +1,25 @@
 from typing import Union
 
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 import redis
 
 from .config.cache import pool
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_redis():
     cache = redis.Redis(connection_pool=pool)
@@ -16,8 +30,21 @@ def get_redis():
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"data": "Hello World"}
 
+@app.get("/ping")
+def ping():
+    return {"status": "healthy"}
+
+@app.get("/set/{key}/{value}")
+def read_item(key: str, value: Union[str, int], cache = Depends(get_redis)):
+    cache.set(key, value)
+    return {key: value}
+
+@app.get("/show/{key}")
+def read_item(key: str, cache = Depends(get_redis)):
+    value = cache.get(key)
+    return {key: value}
 
 @app.get("/check")
 def read_item(cache = Depends(get_redis)):
