@@ -1,5 +1,4 @@
 FROM python:3.11-alpine
-EXPOSE 80
 
 WORKDIR /code
 
@@ -7,9 +6,9 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY ./app /code/app
+COPY . /code/app
 RUN coverage run -m pytest
 RUN coverage report -m
 
 
-CMD ["fastapi", "run", "app/main.py", "--reload"]
+CMD ["fastapi", "run", "app/main.py"]

@@ -3,19 +3,15 @@ services:
   - docker
 
 before_install: 
-  - docker build -t hafiz/docker-fastapi-redis -f Dockerfile.dev .
+  - docker build -t hafiz/test-app -f Dockerfile.dev ./app
 
 script: 
-  - docker run -e CI=true hafiz/docker-fastapi-redis python -m coverage run -m pytest
+  - docker run -e CI=true hafiz/test-app python -m coverage run -m pytest
 
-deploy:
-  provider: elasticbeanstalk
-  region: "ap-southeast-1"
-  app: "Fast-Redis"
-  env: "Fast-Redis-env"
-  bucket_name: "elasticbeanstalk-ap-southeast-1-794864661797"
-  bucket_path: "Fast-Redis"
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: "$AWS_SECRET_KEY"
+after_success: 
+  - docker build -t hafiz/multi-app -f Dockerfile ./app
+  - docker build -t hafiz/multi-nginx -f Dockerfile.nginx ./nginx
+  - docker build -t hafiz/multi-web -f Dockerfile.web ./web
+
+
+
