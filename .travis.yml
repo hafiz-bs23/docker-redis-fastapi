@@ -9,9 +9,9 @@ script:
   - docker run -e CI=true mrnothing01/test-app python -m coverage run -m pytest
 
 after_success: 
-  - docker build -t mrnothing01/multi-app -f Dockerfile ./app
-  - docker build -t mrnothing01/multi-nginx -f Dockerfile ./nginx
-  - docker build -t mrnothing01/multi-web -f Dockerfile ./web
+  - docker build -t mrnothing01/multi-app -f ./app/Dockerfile ./app
+  - docker build -t mrnothing01/multi-nginx -f ./nginx/Dockerfile ./nginx
+  - docker build -t mrnothing01/multi-web -f ./web/Dockerfile ./web
   # Login to docker CLI
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_NAME" --password-stdin
   - docker push mrnothing01/multi-app
