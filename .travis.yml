@@ -3,15 +3,19 @@ services:
   - docker
 
 before_install: 
-  - docker build -t hafiz/test-app -f Dockerfile.dev ./app
+  - docker build -t mrnothing01/test-app -f Dockerfile.dev ./app
 
 script: 
-  - docker run -e CI=true hafiz/test-app python -m coverage run -m pytest
+  - docker run -e CI=true mrnothing01/test-app python -m coverage run -m pytest
 
 after_success: 
   - docker build -t hafiz/multi-app -f Dockerfile ./app
-  - docker build -t hafiz/multi-nginx -f Dockerfile.nginx ./nginx
-  - docker build -t hafiz/multi-web -f Dockerfile.web ./web
-
+  - docker build -t hafiz/multi-nginx -f Dockerfile ./nginx
+  - docker build -t hafiz/multi-web -f Dockerfile ./web
+  # Login to docker CLI
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_NAME" --password-stdin
+  - docker push hafiz/multi-app
+  - docker push hafiz/multi-nginx
+  - docker push hafiz/multi-web
 
 
